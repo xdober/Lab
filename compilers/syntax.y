@@ -130,7 +130,13 @@ Exp : Exp AS Exp {//检查等号左右类型匹配判断Error type 5
 	|Exp RELOP Exp {$$=newNode("Exp",3,$1,$2,$3);}
 	|Exp AD Exp {//检查操作符左右类型Error type 7
 	$$=newNode("Exp",3,$1,$2,$3);
-	if(strcmp($1->type,$3->type)) {printf("Error type 7 at Line %d:Type mismatched for operand.\n ",yylineno);}}
+	if($1->type!=NULL && $3->type!=NULL) {
+		if(strcmp($1->type,$3->type)) {
+			printf("Error type 7 at Line %d:Type mismatched for operand.\n ",yylineno);
+			flagxr = 1;
+		}
+	}
+	}
 	|Exp SU Exp {
 	$$=newNode("Exp",3,$1,$2,$3);
 	if($1->type==NULL||$3->type==NULL)

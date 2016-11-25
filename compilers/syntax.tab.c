@@ -492,9 +492,9 @@ static const yytype_uint8 yyrline[] =
       76,    78,    83,    85,    86,    88,    90,    92,    93,    95,
       96,    97,    98,    99,   100,   101,   103,   104,   106,   107,
      109,   115,   116,   118,   119,   121,   128,   129,   130,   131,
-     134,   147,   160,   173,   174,   175,   176,   187,   188,   216,
-     223,   231,   232,   233,   234,   235,   236,   237,   238,   240,
-     242
+     140,   153,   166,   179,   180,   181,   182,   193,   194,   222,
+     229,   237,   238,   239,   240,   241,   242,   243,   244,   246,
+     248
 };
 #endif
 
@@ -1780,12 +1780,18 @@ yyreduce:
 #line 131 "syntax.y" /* yacc.c:1646  */
     {//检查操作符左右类型Error type 7
 	(yyval.a)=newNode("Exp",3,(yyvsp[-2].a),(yyvsp[-1].a),(yyvsp[0].a));
-	if(strcmp((yyvsp[-2].a)->type,(yyvsp[0].a)->type)) {printf("Error type 7 at Line %d:Type mismatched for operand.\n ",yylineno);}}
-#line 1785 "syntax.tab.c" /* yacc.c:1646  */
+	if((yyvsp[-2].a)->type!=NULL && (yyvsp[0].a)->type!=NULL) {
+		if(strcmp((yyvsp[-2].a)->type,(yyvsp[0].a)->type)) {
+			printf("Error type 7 at Line %d:Type mismatched for operand.\n ",yylineno);
+			flagxr = 1;
+		}
+	}
+	}
+#line 1791 "syntax.tab.c" /* yacc.c:1646  */
     break;
 
   case 50:
-#line 134 "syntax.y" /* yacc.c:1646  */
+#line 140 "syntax.y" /* yacc.c:1646  */
     {
 	(yyval.a)=newNode("Exp",3,(yyvsp[-2].a),(yyvsp[-1].a),(yyvsp[0].a));
 	if((yyvsp[-2].a)->type==NULL||(yyvsp[0].a)->type==NULL)
@@ -1799,11 +1805,11 @@ yyreduce:
 	    flagxr=1;
 	}	
 	}
-#line 1803 "syntax.tab.c" /* yacc.c:1646  */
+#line 1809 "syntax.tab.c" /* yacc.c:1646  */
     break;
 
   case 51:
-#line 147 "syntax.y" /* yacc.c:1646  */
+#line 153 "syntax.y" /* yacc.c:1646  */
     {//检查操作符左右类型Error type 7
 	(yyval.a)=newNode("Exp",3,(yyvsp[-2].a),(yyvsp[-1].a),(yyvsp[0].a));
 	if((yyvsp[-2].a)->type==NULL||(yyvsp[0].a)->type==NULL)
@@ -1817,11 +1823,11 @@ yyreduce:
 	    flagxr=1;
 	}
 	}
-#line 1821 "syntax.tab.c" /* yacc.c:1646  */
+#line 1827 "syntax.tab.c" /* yacc.c:1646  */
     break;
 
   case 52:
-#line 160 "syntax.y" /* yacc.c:1646  */
+#line 166 "syntax.y" /* yacc.c:1646  */
     {//检查操作符左右类型Error type 7
 	(yyval.a)=newNode("Exp",3,(yyvsp[-2].a),(yyvsp[-1].a),(yyvsp[0].a));
 	if((yyvsp[-2].a)->type==NULL||(yyvsp[0].a)->type==NULL)
@@ -1835,29 +1841,29 @@ yyreduce:
 	    flagxr=1;
 	}
 	}
-#line 1839 "syntax.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 53:
-#line 173 "syntax.y" /* yacc.c:1646  */
-    {(yyval.a)=newNode("Exp",3,(yyvsp[-2].a),(yyvsp[-1].a),(yyvsp[0].a));}
 #line 1845 "syntax.tab.c" /* yacc.c:1646  */
     break;
 
-  case 54:
-#line 174 "syntax.y" /* yacc.c:1646  */
-    {(yyval.a)=newNode("Exp",2,(yyvsp[-1].a),(yyvsp[0].a));}
+  case 53:
+#line 179 "syntax.y" /* yacc.c:1646  */
+    {(yyval.a)=newNode("Exp",3,(yyvsp[-2].a),(yyvsp[-1].a),(yyvsp[0].a));}
 #line 1851 "syntax.tab.c" /* yacc.c:1646  */
     break;
 
-  case 55:
-#line 175 "syntax.y" /* yacc.c:1646  */
+  case 54:
+#line 180 "syntax.y" /* yacc.c:1646  */
     {(yyval.a)=newNode("Exp",2,(yyvsp[-1].a),(yyvsp[0].a));}
 #line 1857 "syntax.tab.c" /* yacc.c:1646  */
     break;
 
+  case 55:
+#line 181 "syntax.y" /* yacc.c:1646  */
+    {(yyval.a)=newNode("Exp",2,(yyvsp[-1].a),(yyvsp[0].a));}
+#line 1863 "syntax.tab.c" /* yacc.c:1646  */
+    break;
+
   case 56:
-#line 176 "syntax.y" /* yacc.c:1646  */
+#line 182 "syntax.y" /* yacc.c:1646  */
     {//函数引用:检查是否未定义就调用Error type 2 
 	(yyval.a)=newNode("Exp",4,(yyvsp[-3].a),(yyvsp[-2].a),(yyvsp[-1].a),(yyvsp[0].a));
 	if(exitvar((yyvsp[-3].a))){
@@ -1869,17 +1875,17 @@ yyreduce:
 		flagxr=1;
 	} 
 	}
-#line 1873 "syntax.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 57:
-#line 187 "syntax.y" /* yacc.c:1646  */
-    {(yyval.a)=newNode("Exp",3,(yyvsp[-2].a),(yyvsp[-1].a),(yyvsp[0].a));}
 #line 1879 "syntax.tab.c" /* yacc.c:1646  */
     break;
 
+  case 57:
+#line 193 "syntax.y" /* yacc.c:1646  */
+    {(yyval.a)=newNode("Exp",3,(yyvsp[-2].a),(yyvsp[-1].a),(yyvsp[0].a));}
+#line 1885 "syntax.tab.c" /* yacc.c:1646  */
+    break;
+
   case 58:
-#line 188 "syntax.y" /* yacc.c:1646  */
+#line 194 "syntax.y" /* yacc.c:1646  */
     {//数组引用：是否定义&标识误用&下标 Error type 10，Error type 12
 	(yyval.a)=newNode("Exp",4,(yyvsp[-3].a),(yyvsp[-2].a),(yyvsp[-1].a),(yyvsp[0].a));
 	if((!exitarray((yyvsp[-3].a)))&&(exitvar((yyvsp[-3].a)))||(exitfunc((yyvsp[-3].a))))
@@ -1908,11 +1914,11 @@ yyreduce:
 	}
 	else newarray(3,(yyvsp[-3].a)->type,(yyvsp[-3].a),(yyvsp[-2].a));
 	}
-#line 1912 "syntax.tab.c" /* yacc.c:1646  */
+#line 1918 "syntax.tab.c" /* yacc.c:1646  */
     break;
 
   case 59:
-#line 216 "syntax.y" /* yacc.c:1646  */
+#line 222 "syntax.y" /* yacc.c:1646  */
     {//结构体引用:检查点号引用Error type 13
 	(yyval.a)=newNode("Exp",3,(yyvsp[-2].a),(yyvsp[-1].a),(yyvsp[0].a));
 	if(!exitstruc((yyvsp[-2].a))){
@@ -1920,11 +1926,11 @@ yyreduce:
 		flagxr=1;
 	}
 	}
-#line 1924 "syntax.tab.c" /* yacc.c:1646  */
+#line 1930 "syntax.tab.c" /* yacc.c:1646  */
     break;
 
   case 60:
-#line 223 "syntax.y" /* yacc.c:1646  */
+#line 229 "syntax.y" /* yacc.c:1646  */
     {//变量引用:检查是否定义Error type 1 
 	(yyval.a)=newNode("Exp",1,(yyvsp[0].a));
 	if(!exitvar((yyvsp[0].a))&&!exitarray((yyvsp[0].a))){
@@ -1933,72 +1939,72 @@ yyreduce:
 	}
     else (yyval.a)->type=typevar((yyvsp[0].a));
 	}
-#line 1937 "syntax.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 61:
-#line 231 "syntax.y" /* yacc.c:1646  */
-    {(yyval.a)=newNode("Exp",1,(yyvsp[0].a));(yyval.a)->tag=3;(yyval.a)->type="intnumber";}
 #line 1943 "syntax.tab.c" /* yacc.c:1646  */
     break;
 
-  case 62:
-#line 232 "syntax.y" /* yacc.c:1646  */
-    {(yyval.a)=newNode("Exp",1,(yyvsp[0].a));(yyval.a)->tag=3;(yyval.a)->type="floatnumber";(yyval.a)->value=(yyvsp[0].a)->value;}
+  case 61:
+#line 237 "syntax.y" /* yacc.c:1646  */
+    {(yyval.a)=newNode("Exp",1,(yyvsp[0].a));(yyval.a)->tag=3;(yyval.a)->type="intnumber";}
 #line 1949 "syntax.tab.c" /* yacc.c:1646  */
     break;
 
-  case 63:
-#line 233 "syntax.y" /* yacc.c:1646  */
-    {yyerrok;}
+  case 62:
+#line 238 "syntax.y" /* yacc.c:1646  */
+    {(yyval.a)=newNode("Exp",1,(yyvsp[0].a));(yyval.a)->tag=3;(yyval.a)->type="floatnumber";(yyval.a)->value=(yyvsp[0].a)->value;}
 #line 1955 "syntax.tab.c" /* yacc.c:1646  */
     break;
 
-  case 64:
-#line 234 "syntax.y" /* yacc.c:1646  */
+  case 63:
+#line 239 "syntax.y" /* yacc.c:1646  */
     {yyerrok;}
 #line 1961 "syntax.tab.c" /* yacc.c:1646  */
     break;
 
-  case 65:
-#line 235 "syntax.y" /* yacc.c:1646  */
+  case 64:
+#line 240 "syntax.y" /* yacc.c:1646  */
     {yyerrok;}
 #line 1967 "syntax.tab.c" /* yacc.c:1646  */
     break;
 
-  case 66:
-#line 236 "syntax.y" /* yacc.c:1646  */
+  case 65:
+#line 241 "syntax.y" /* yacc.c:1646  */
     {yyerrok;}
 #line 1973 "syntax.tab.c" /* yacc.c:1646  */
     break;
 
-  case 67:
-#line 237 "syntax.y" /* yacc.c:1646  */
+  case 66:
+#line 242 "syntax.y" /* yacc.c:1646  */
     {yyerrok;}
 #line 1979 "syntax.tab.c" /* yacc.c:1646  */
     break;
 
-  case 68:
-#line 238 "syntax.y" /* yacc.c:1646  */
+  case 67:
+#line 243 "syntax.y" /* yacc.c:1646  */
     {yyerrok;}
 #line 1985 "syntax.tab.c" /* yacc.c:1646  */
     break;
 
-  case 69:
-#line 240 "syntax.y" /* yacc.c:1646  */
-    {(yyval.a)=newNode("Args",3,(yyvsp[-2].a),(yyvsp[-1].a),(yyvsp[0].a));
-	pnum=pnum+1;}
-#line 1992 "syntax.tab.c" /* yacc.c:1646  */
+  case 68:
+#line 244 "syntax.y" /* yacc.c:1646  */
+    {yyerrok;}
+#line 1991 "syntax.tab.c" /* yacc.c:1646  */
     break;
 
-  case 70:
-#line 242 "syntax.y" /* yacc.c:1646  */
-    {(yyval.a)=newNode("Args",1,(yyvsp[0].a));pnum=pnum+1;}
+  case 69:
+#line 246 "syntax.y" /* yacc.c:1646  */
+    {(yyval.a)=newNode("Args",3,(yyvsp[-2].a),(yyvsp[-1].a),(yyvsp[0].a));
+	pnum=pnum+1;}
 #line 1998 "syntax.tab.c" /* yacc.c:1646  */
     break;
 
+  case 70:
+#line 248 "syntax.y" /* yacc.c:1646  */
+    {(yyval.a)=newNode("Args",1,(yyvsp[0].a));pnum=pnum+1;}
+#line 2004 "syntax.tab.c" /* yacc.c:1646  */
+    break;
 
-#line 2002 "syntax.tab.c" /* yacc.c:1646  */
+
+#line 2008 "syntax.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2233,7 +2239,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 244 "syntax.y" /* yacc.c:1906  */
+#line 250 "syntax.y" /* yacc.c:1906  */
 
 
 int yyerror(const char* msg) {
