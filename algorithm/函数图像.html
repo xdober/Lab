@@ -1,0 +1,110 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<style type = "text/css">
+			h2 {
+				position: fixed;
+				left: 300px;
+				top: 10px;
+			}
+		</style>
+		<title>函数图像</title>
+	</head>
+	<body>
+		<h2>各个函数的图象</h2>
+		<canvas id="c" height="6000" width="6000"></canvas>
+		<script type="text/javascript">
+		var c = document.getElementById("c");
+		var context = c.getContext("2d");
+		//y轴与x轴
+		context.beginPath();
+		context.moveTo(100,6000);
+		context.lineTo(100,50);
+		context.moveTo(95,55);
+		context.lineTo(100,50);
+		context.lineTo(105,55);
+
+		context.moveTo(0,5900);
+		context.lineTo(5500,5900);
+		context.moveTo(5495,5895);
+		context.lineTo(5500,5900);
+		context.lineTo(5495,5905);
+		context.strokeStyle = "#000";
+		context.lineWidth = 3;
+		context.stroke();
+		for(var x=100;x<6000;x+=300){
+			context.moveTo(x,5895);
+			context.lineTo(x,5905);
+			context.moveTo(95,-x+5700);
+			context.lineTo(105,-x+5700);
+		}
+		context.stroke();
+		//填充文字
+		context.font = "bold 16px sans-self";
+		context.fillText("n",5510,5900);
+		context.fillText("y",100,40);
+		context.fillText("0",80,5920);
+		context.font = "30px Verdana ";
+		context.fillStyle = "#00FFFF";
+		context.fillText("log(n)",500,5850);
+		context.fillStyle = "#FF00FF";
+		context.fillText("n*log(n)",300,5750);
+		context.fillStyle = "#FF0000";
+		context.fillText("n",480,5560);
+		context.fillStyle = "#FFFF00";
+		context.fillText("n^2",220,5560);
+		context.fillStyle = "#00FF00";
+		context.fillText("n^3",105,5560);
+		context.fillStyle = "#0000FF";
+		context.fillText("2^n",200,5640);
+		//画曲线 x曲线
+		context.beginPath();
+		context.moveTo(100,5900);
+		for(var x=100;x< 6000;x++){
+			context.lineTo(x,-(x-100)+5900)
+		}
+		context.strokeStyle = "#FF0000";
+		context.stroke();
+		//画曲线 x^2曲线
+		context.beginPath();
+		context.moveTo(100,5900);
+		for(var x=100;x< 800;x++){
+			context.lineTo(x,-Math.pow((x-100)/30,2)*30+5900)
+		}
+		context.strokeStyle = "#FFFF00";
+		context.stroke();
+		//画曲线 x^3曲线
+		context.beginPath();
+		context.moveTo(100,5900);
+		for(var x=100;x< 800;x++){
+			context.lineTo(x,-Math.pow((x-100)/30,3)*30+5900)
+		}
+		context.strokeStyle = "#00FF00";
+		context.stroke();
+		//画曲线 2^x曲线
+		context.beginPath();
+		context.moveTo(100,5870);
+		for(var x=100;x< 700;x++){
+			context.lineTo(x,-Math.pow(2,(x-100)/30)*30+5900)
+		}
+		context.strokeStyle = "#0000FF";
+		context.stroke();
+		//画曲线 log x曲线
+		context.beginPath();
+		context.moveTo(130,5900);
+		for(var x=130;x< 6000;x++){
+			context.lineTo(x,-Math.log((x-100)/30)*30/(Math.log(10))+5900)
+		}
+		context.strokeStyle = "#00FFFF";
+		context.stroke();
+		//画曲线 x*log x曲线
+		context.beginPath();
+		context.moveTo(130,5900);
+		for(var x=130;x< 6000;x++){
+			context.lineTo(x,-(x-100)/30*Math.log((x-100)/30)*30/(Math.log(10))+5900)
+		}
+		context.strokeStyle = "#FF00FF";
+		context.stroke();
+		</script>
+	</body>
+</html>
