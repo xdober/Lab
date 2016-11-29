@@ -42,13 +42,10 @@ ExtDefList : ExtDef ExtDefList {$$=newNode("ExtDefList",2,$1,$2);}
 	;
 ExtDef : Specifier ExtDecList FH { //变量定义:检查是否重定义Error type 3
 	$$=newNode("ExtDef",3,$1,$2,$3);
-	if(exitvar($2)) printf("Error type 3 at line %d:Redefined Variable '%s'\n",yylineno,$2->content);
-	else newvar(2,$1,$2);
 	}
 	| Specifier FH {$$=newNode("ExtDef",2,$1,$2);}
 	| Specifier FunDec CompSt {//函数定义:检查实际返回类型与函数类型是否匹配Error type 8
 	$$=newNode("ExtDef",3,$1,$2,$3);
-	newfunc(4,$1);
 	}
 	|error FH{yyerrok;cher =1;}
 	;
