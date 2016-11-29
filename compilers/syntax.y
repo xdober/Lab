@@ -8,7 +8,6 @@
 	extern int  exitvar(struct Node* tp);
 	extern int  exitfunc(struct Node* tp);
 	extern int  exitarray(struct Node* tp);
-	extern int flagxr;
 	int cher = 0;
 	int pnum=0;
 %}
@@ -31,20 +30,18 @@ double d;
 %%
 Program : ExtDefList {
 	$$=newNode("Program",1,$1);
-	if(!flagxr){
 		printf("打印syntax tree:\n");
 		eval($$,0);
 		printf("syntax tree打印完毕!\n\n");
 	}
-	}
 ExtDefList : ExtDef ExtDefList {$$=newNode("ExtDefList",2,$1,$2);}
 	| {$$=newNode("ExtDef",0,-1);}
 	;
-ExtDef : Specifier ExtDecList FH { //变量定义:检查是否重定义Error type 3
+ExtDef : Specifier ExtDecList FH {
 	$$=newNode("ExtDef",3,$1,$2,$3);
 	}
 	| Specifier FH {$$=newNode("ExtDef",2,$1,$2);}
-	| Specifier FunDec CompSt {//函数定义:检查实际返回类型与函数类型是否匹配Error type 8
+	| Specifier FunDec CompSt {
 	$$=newNode("ExtDef",3,$1,$2,$3);
 	}
 	|error FH{yyerrok;cher =1;}
@@ -55,13 +52,12 @@ ExtDecList : VarDec {$$=newNode("ExtDecList",1,$1);}
 Specifier : TYPE {$$=newNode("Specifier",1,$1);}
 	| StructSpecifier {$$=newNode("Specifier",1,$1);}
 	;
-StructSpecifier : STRUCT OptTag LD DefList RD {//结构体定义:检查是否重定义Error type 16
+StructSpecifier : STRUCT OptTag LD DefList RD {
 	$$=newNode("StructSpecifier",5,$1,$2,$3,$4,$5);
-	if(exitstruc($2)) printf("Error type 16 at line %d:Duplicated name %s\n",yylineno,$2->content);
-	else newstruc(1,$2);}
-	| STRUCT Tag {//结构体引用:检查是否未定义就引用Error type 17
+	}
+	| STRUCT Tag {
 	$$=newNode("StructSpecifier",2,$1,$2);
-	if(!exitstruc($2)) printf("Error type 17 at Line %d:undefined structure '%s'\n",yylineno,$2->content);}
+	}
 	;
 OptTag : identifier {$$=newNode("OptTag",1,$1);}
 	| {$$=newNode("OptTag",0,-1);}
@@ -72,11 +68,9 @@ VarDec : identifier {$$=newNode("VarDec",1,$1);}
 	| VarDec LF intnumber RF {$$=newNode("VarDec",4,$1,$2,$3,$4);}
 	|error RF{yyerrok;cher =1;}
 	;
-FunDec : identifier LB VarList RB {//函数定义:检查是否重复定义Error type 4
+FunDec : identifier LB VarList RB {
 	$$=newNode("FunDec",4,$1,$1,$2,$3,$4);
-	$$->content=$1->content;
-	if(exitfunc($1)) printf("Error type 4 at Line %d:Redefined Function '%s'\n",yylineno,$1->content);
-	else newfunc(2,$1);}
+	}
 	| identifier LB RB {$$=newNode("FunDec",3,$1,$2,$3);}
 	;
 VarList : ParamDec DH VarList {$$=newNode("VarList",3,$1,$2,$3);}
@@ -103,11 +97,9 @@ EESSL : ELSE Stmt {$$=newNode("EESSL",2,$1,$2);}
 DefList : Def DefList {$$=newNode("DefList",2,$1,$2);}
 	| {$$=newNode("DefList",0,-1);}
 	;
-Def : Specifier DecList FH {//变量或数组定义:检查变量是否重定义 Error type 3
+Def : Specifier DecList FH {
 	$$=newNode("Def",3,$1,$2,$3);
-	if(exitvar($2)||exitarray($2))  printf("Error type 3 at Line %d:Redefined Variable '%s'\n",yylineno,$2->content);
-	 else if($2->tag==4) newarray(2,$1,$2);
-	else newvar(2,$1,$2);}
+	}
 	;
 DecList : Dec {$$=newNode("DecList",1,$1);}
 	| Dec DH DecList {$$=newNode("DecList",3,$1,$2,$3);}
@@ -115,121 +107,39 @@ DecList : Dec {$$=newNode("DecList",1,$1);}
 Dec : VarDec {$$=newNode("Dec",1,$1);}
 	|VarDec AS Exp {$$=newNode("Dec",3,$1,$2,$3);}
 	;
-Exp : Exp AS Exp {//检查等号左右类型匹配判断Error type 5
+Exp : Exp AS Exp {
 	$$=newNode("Exp",3,$1,$2,$3);
-	if($1->type!=NULL && $3->type!=NULL){
-		if(strcmp($1->type,$3->type)){printf("Error type 5 at Line %d:Type mismatched for assignment.\n ",yylineno);}
-		flagxr = 1;
-	}
 	}
 	|Exp AND Exp {$$=newNode("Exp",3,$1,$2,$3);}
 	|Exp OR Exp {$$=newNode("Exp",3,$1,$2,$3);}
 	|Exp RELOP Exp {$$=newNode("Exp",3,$1,$2,$3);}
-	|Exp AD Exp {//检查操作符左右类型Error type 7
+	|Exp AD Exp {
 	$$=newNode("Exp",3,$1,$2,$3);
-	if($1->type!=NULL && $3->type!=NULL) {
-		if(strcmp($1->type,$3->type)) {
-			printf("Error type 7 at Line %d:Type mismatched for operand.\n ",yylineno);
-			flagxr = 1;
-		}
-	}
 	}
 	|Exp SU Exp {
 	$$=newNode("Exp",3,$1,$2,$3);
-	if($1->type==NULL||$3->type==NULL)
-	{
-	    flagxr=1;
-	printf("Error type 7 at line %d：Type mismatched for operands\n",yylineno);
-	}	
-	else if(strcmp($1->type,$3->type))
-	{	
-	    printf("Error type 7 at line %d：Type mismatched for operands\n",yylineno);
-	    flagxr=1;
-	}	
 	}
-	|Exp MU Exp {//检查操作符左右类型Error type 7
+	|Exp MU Exp {
 	$$=newNode("Exp",3,$1,$2,$3);
-	if($1->type==NULL||$3->type==NULL)
-	{
-	    flagxr=1;
-		printf("Error type 7 at line %d：Type mismatched for operands\n",yylineno);
-	}	
-	else if(strcmp($1->type,$3->type))
-	{	
-	    printf("Error type 7 at line %d：Type mismatched for operands\n",yylineno);
-	    flagxr=1;
 	}
-	}
-	|Exp DI Exp {//检查操作符左右类型Error type 7
+	|Exp DI Exp {
 	$$=newNode("Exp",3,$1,$2,$3);
-	if($1->type==NULL||$3->type==NULL)
-	{
-	    flagxr=1;
-	    printf("Error type 7 at line %d：Type mismatched for operands\n",yylineno);
-	}	
-	else if(strcmp($1->type,$3->type))
-	{	
-	    printf("Error type 7 at line %d：Type mismatched for operands\n",yylineno);
-	    flagxr=1;
-	}
 	}
 	|LB Exp RB {$$=newNode("Exp",3,$1,$2,$3);}
 	|SU Exp {$$=newNode("Exp",2,$1,$2);}
 	|NT Exp {$$=newNode("Exp",2,$1,$2);}
-	|identifier LB Args RB {//函数引用:检查是否未定义就调用Error type 2 
+	|identifier LB Args RB {
 	$$=newNode("Exp",4,$1,$2,$3,$4);
-	if(exitvar($1)){
-		printf("Error type 11 at line %d：'%s'is not a function\n",yylineno,$1->content);
-	    flagxr=1;
-	}
-	else if(!exitfunc($1)){
-		printf("Error type 2 at Line %d:undefined Function %s\n ",yylineno,$1->content);
-		flagxr=1;
-	} 
 	}
 	|identifier LB RB {$$=newNode("Exp",3,$1,$2,$3);}
-	|Exp LF Exp RF {//数组引用：是否定义&标识误用&下标 Error type 10，Error type 12
+	|Exp LF Exp RF {
 	$$=newNode("Exp",4,$1,$2,$3,$4);
-	if((!exitarray($1))&&(exitvar($1))||(exitfunc($1)))
-	{
-        printf("Error type 10 at line %d：'%s' is not an array\n",yylineno,$1->content);
- 	    flagxr=1;
 	}
-	else if($3->type == NULL)
-	{
-	    flagxr=1;
-	}
-	else if(strcmp("int",$3->type))
-	{
-	    printf("Error type 12 at line %d：'%f' is not an integer\n",yylineno,$3->value);
-	    flagxr=1;
-	}
-	else if(exitvar($1))
-	{
-	    printf("Error type 11 at line %d：'%s'is not a function\n",yylineno,$1->content);
-	    flagxr=1;
-	}	
-	else if(!exitarray($1))
-	{
-	    printf("Error type 2 at line %d：Undefined function '%s'\n",yylineno,$1->content);
-	    flagxr=1;
-	}
-	else newarray(3,$1->type,$1,$2);
-	}
-	|Exp DOT identifier {//结构体引用:检查点号引用Error type 13
+	|Exp DOT identifier {
 	$$=newNode("Exp",3,$1,$2,$3);
-	if(!exitstruc($1)){
-		printf("Error type 13 at Line %d:Illegal use of '.'.\n",yylineno);
-		flagxr=1;
 	}
-	}
-	|identifier {//变量引用:检查是否定义Error type 1 
+	|identifier {
 	$$=newNode("Exp",1,$1);
-	if(!exitvar($1)&&!exitarray($1)){
-        printf("Error type 1 at Line %d:undefined variable %s\n ",yylineno,$1->content);
-		flagxr=1;
-	}
-    else $$->type=typevar($1);
 	}
 	|intnumber {$$=newNode("Exp",1,$1);$$->tag=3;$$->type="intnumber";}//整型常数
 	|floatnumber {$$=newNode("Exp",1,$1);$$->tag=3;$$->type="floatnumber";$$->value=$1->value;} //浮点型常数
@@ -241,7 +151,7 @@ Exp : Exp AS Exp {//检查等号左右类型匹配判断Error type 5
     | error DI Exp {yyerrok;}
 ; 
 Args : Exp DH Args {$$=newNode("Args",3,$1,$2,$3);
-	pnum=pnum+1;}//记录形参个数
+	pnum=pnum+1;}
 	|Exp {$$=newNode("Args",1,$1);pnum=pnum+1;}
 	;
 %%
