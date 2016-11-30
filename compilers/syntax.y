@@ -56,19 +56,29 @@ StructSpecifier : STRUCT OptTag LD DefList RD {
 	$$=newNode("StructSpecifier",2,$1,$2);
 	}
 	;
-OptTag : identifier {$$=newNode("OptTag",1,$1);}
+OptTag : identifier {
+		$$=newNode("OptTag",1,$1);
+	}
 	| {$$=newNode("OptTag",0,-1);}
 	;
 Tag : identifier {$$=newNode("Tag",1,$1);}
 	;
-VarDec : identifier {$$=newNode("VarDec",1,$1);}
-	| VarDec LF intnumber RF {$$=newNode("VarDec",4,$1,$2,$3,$4);}
+VarDec : identifier {
+		$$=newNode("VarDec",1,$1);
+		$$->tag = 1;
+	}
+	| VarDec LF intnumber RF {
+		$$=newNode("VarDec",4,$1,$2,$3,$4);
+		$$->tag = 4;
+	}
 	|error RF{yyerrok;cher =1;}
 	;
 FunDec : identifier LB VarList RB {
-	$$=newNode("FunDec",4,$1,$1,$2,$3,$4);
+		$$=newNode("FunDec",4,$1,$1,$2,$3,$4);
 	}
-	| identifier LB RB {$$=newNode("FunDec",3,$1,$2,$3);}
+	| identifier LB RB {
+		$$=newNode("FunDec",3,$1,$2,$3);
+	}
 	;
 VarList : ParamDec DH VarList {$$=newNode("VarList",3,$1,$2,$3);}
 	| ParamDec {$$=newNode("VarList",1,$1);}
@@ -138,15 +148,22 @@ Exp : Exp AS Exp {
 	|identifier {
 	$$=newNode("Exp",1,$1);
 	}
-	|intnumber {$$=newNode("Exp",1,$1);$$->tag=3;$$->type="intnumber";}//整型常数
-	|floatnumber {$$=newNode("Exp",1,$1);$$->tag=3;$$->type="floatnumber";$$->value=$1->value;} //浮点型常数
+	|intnumber {
+		$$=newNode("Exp",1,$1);
+	}//整型常数
+	|floatnumber {
+		$$=newNode("Exp",1,$1);
+		$$->tag=3;
+		$$->type="floatnumber";
+		$$->value=$1->value;
+	} //浮点型常数
     | error RB {yyerrok;}
     | error RF {yyerrok;}
     | error AD Exp {yyerrok;}
     | error SU Exp {yyerrok;}
     | error MU Exp {yyerrok;}
     | error DI Exp {yyerrok;}
-;
+	;
 Args : Exp DH Args {$$=newNode("Args",3,$1,$2,$3);
 	pnum=pnum+1;}
 	|Exp {$$=newNode("Args",1,$1);pnum=pnum+1;}
