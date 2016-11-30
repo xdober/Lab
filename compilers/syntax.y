@@ -4,10 +4,7 @@
 	#include <stdio.h>
 	#include <unistd.h>
 	int yyerror(const char *msg);
-	extern int  exitstruc(struct Node* tp);
-	extern int  exitvar(struct Node* tp);
-	extern int  exitfunc(struct Node* tp);
-	extern int  exitarray(struct Node* tp);
+	extern void eval(struct Node *a,int level);
 	int cher = 0;
 	int pnum=0;
 %}
@@ -18,8 +15,8 @@
 struct Node* a;
 double d;
 }
-%token <a> TYPE STRUCT 
-%token <a> IF ELSE WHILE  RETURN 
+%token <a> TYPE STRUCT
+%token <a> IF ELSE WHILE  RETURN
 %token <a> LD RD FH DH
 %token <a> intnumber floatnumber identifier e_r_r_o_r
 %type  <a> Program ExtDefList ExtDef ExtDecList Specifier StructSpecifier OptTag  Tag VarDec  FunDec VarList ParamDec CompSt StmtList Stmt DefList Def DecList Dec Exp Args EESSL
@@ -149,7 +146,7 @@ Exp : Exp AS Exp {
     | error SU Exp {yyerrok;}
     | error MU Exp {yyerrok;}
     | error DI Exp {yyerrok;}
-; 
+;
 Args : Exp DH Args {$$=newNode("Args",3,$1,$2,$3);
 	pnum=pnum+1;}
 	|Exp {$$=newNode("Args",1,$1);pnum=pnum+1;}
@@ -160,4 +157,3 @@ int yyerror(const char* msg) {
 	fprintf(stderr,"%d:%d:error: %s\n", yylloc.first_line, yylloc.first_column, msg);
 	return 0;
 }
-
