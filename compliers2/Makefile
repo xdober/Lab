@@ -6,7 +6,7 @@ all:
 .PHONY=run debug
 
 run:
-	./parser test1.cmn
+	./parser test1.c
 
 debug:
-	gdb parser -ex "r test1.cmn"
+	gdb parser -ex "r test1.c"

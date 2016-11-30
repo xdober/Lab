@@ -15,7 +15,7 @@ struct ast *newast(char* name,int num,...)//抽象语法树建立
     va_list valist; //定义变长参数列表
     struct ast *a=(struct ast*)malloc(sizeof(struct ast));//新生成的父节点
     struct ast *temp;
-    if(!a) 
+    if(!a)
     {
         yyerror("out of space");
         exit(0);
@@ -51,10 +51,6 @@ struct ast *newast(char* name,int num,...)//抽象语法树建立
 	{
 	    a->type = "int";
 	    a->value=atof(yytext);
-	/*    getchar();getchar();
-	    printf("%d",a->value);
-	    getchar();getchar();
-*/
 	}
 	else if(!strcmp(a->name,"FLOAT"))
 	{
@@ -63,7 +59,7 @@ struct ast *newast(char* name,int num,...)//抽象语法树建立
 	}
 	else{
 	    char* s;
-	    s = (char*)malloc(sizeof(char*)*40);//存储词法单元的语义值
+	    s = (char*)malloc(sizeof(char)*40);//存储词法单元的语义值
 	    strcpy(s,yytext);
 	    a->content = s;
 	}
@@ -76,13 +72,23 @@ void eval(struct ast *a,int level)//先序遍历抽象语法树
     if(a!=NULL)
     {
         for(i=0; i<level; ++i)//孩子结点相对父节点缩进2个空格
+        {
             printf("  ");
+        }
         if(a->line!=-1){ //产生空的语法单元不需要打印信息
             printf("%s ",a->name);//打印语法单元名字，ID/TYPE/INTEGER要打印yytext的值
-            if((!strcmp(a->name,"ID"))||(!strcmp(a->name,"TYPE")))printf(":%s ",a->content);
-            else if(!strcmp(a->name,"INT"))printf(":%s",a->type);
+            if((!strcmp(a->name,"ID"))||(!strcmp(a->name,"TYPE")))
+            {
+                printf(":%s ",a->content);
+            }
+            else if(!strcmp(a->name,"INT"))
+            {
+                printf(":%s",a->type);
+            }
             else
+            {
                 printf("(%d)",a->line);
+            }
         }
         printf("\n");
 
@@ -100,9 +106,13 @@ void newvar(int num,...)
     va_start(valist,num);//初始化变长参数为num后的参数
     temp=va_arg(valist, struct ast*);//取变长参数列表中的第一个结点
     if(temp->scope!=NULL)
-	a->type = temp->scope;
+    {
+        a->type = temp->scope;
+    }
     else
+    {
         a->type = temp->content;
+    }
     temp=va_arg(valist, struct ast*);//取变长参数列表中的第二个结点
     a->name = temp->content;
     vartail->next = a;
@@ -117,9 +127,9 @@ int is_var_define(struct ast* temp)
     struct var* p = (struct var*)malloc(sizeof(struct var));
     p = varhead->next;
 	while(p!=NULL)
-        {	
+    {
 		if(p->name!=NULL&&temp->content!=NULL)
-		{	
+		{
 			if(!strcmp(p->name,temp->content))
 			{
 		    		flag = 1;
@@ -127,11 +137,11 @@ int is_var_define(struct ast* temp)
 			}
 		}
 		p = p->next;
-    	}
-    	if(!flag)
-    	{
-        	return 0;
-    	}
+    }
+	if(!flag)
+	{
+    	return 0;
+	}
 }
 /*给变量赋作用域*/
 void scopevar(char* name)
@@ -156,13 +166,13 @@ char* var_type(struct ast* temp)
     while(p!=NULL)
     {
 	if(p->name!=NULL&&temp->content!=NULL)
-	{       
+	{
 	if(!strcmp(p->name,temp->content))
         {
             return p->type;
         }
-	}	
-        p = p->next;                                            
+	}
+        p = p->next;
     }
 }
 //查找变量作用域
@@ -173,13 +183,13 @@ char* var_scope(struct ast* temp)
     while(p!=NULL)
     {
 	if(p->name!=NULL&&temp->content!=NULL)
-	{       
+	{
 		if(!strcmp(p->name,temp->content))
         	{
             		return p->scope;
         	}
-	}	
-        p = p->next;                                            
+	}
+        p = p->next;
     }
 }
 
@@ -190,22 +200,21 @@ void newfunc(int num,...)
     struct ast *temp=(struct ast*)malloc(sizeof(struct ast));
     va_start(valist,num);//初始化变长参数为num后的参数
     switch(num)
-    { 
-        case 1:
+    {
+    case 1:
 	    functail->paramnum = functail->paramnum + 1;
 	    break;
 	case 2://记录函数名
 	    temp=va_arg(valist, struct ast*);//取变长参数列表中的第一个结点
 	    functail->name = temp->content;
 	    x2++;
-            break;
+        break;
 	case 3://记录返回值
 	    temp=va_arg(valist, struct ast*);//取变长参数列表中的第一个结点
 	    functail->rtype = temp->type;
 	    break;
 	default://记录函数类型,返回类型不匹配则报出错误
-	    //paramnum1=0;//将实参个数清0
-            temp=va_arg(valist, struct ast*);//取变长参数列表中的第1个结点
+        temp=va_arg(valist, struct ast*);//取变长参数列表中的第1个结点
 	    if(functail->rtype!=NULL)
 	    {
 		if(strcmp(functail->rtype,temp->content))
@@ -221,7 +230,7 @@ void newfunc(int num,...)
 	    functail = a;
 	    break;
     }
-    
+
 }
 
 /*查找函数是否定义，1表示已经定义，0表示未定义*/
@@ -254,7 +263,7 @@ char* func_type(struct ast* temp)
         {
             return p->type;
         }
-        p = p->next;                                            
+        p = p->next;
     }
 }
 
@@ -269,7 +278,7 @@ int func_formalnum(struct ast* temp)
         {
             return p->paramnum;
         }
-        p = p->next;                                            
+        p = p->next;
     }
 }
 /*形参符号表*/
@@ -307,9 +316,9 @@ int is_paramvar_define(struct ast* temp)
 	struct paramvar* p = (struct paramvar*)malloc(sizeof(struct paramvar));
 	p = paramvarhead->next;
 	while(p!=NULL)
-        {	
+        {
 		if(p->name!=NULL&&temp->content!=NULL)
-		{	
+		{
 			if(!strcmp(p->name,temp->content))
 			{
 		    		flag = 1;
@@ -338,7 +347,7 @@ void newarray(int num,...)
     arraytail->next = a;
     arraytail = a;
     x3++;
-}	
+}
 /*查找数组是否定义，1表示已经定义，0表示未定义*/
 int is_array_define(struct ast* temp)
 {
@@ -380,7 +389,7 @@ char* array_type(struct ast* temp)
         {
             return p->type;
         }
-        p = p->next;                                            
+        p = p->next;
     }
 }
 
@@ -394,8 +403,6 @@ void newstruc(int num,...)
     	temp=va_arg(valist, struct ast*);//取变长参数列表中的第一个结点
     	a->name = temp->content;
 	a->type = "struct";
-     // temp=va_arg(valist, struct ast*);//取变长参数列表中的第二个结点
-     // a->name = temp->content;
     structail->next = a;
     structail = a;
     x4++;
@@ -410,7 +417,7 @@ int is_struc_define(struct ast* temp)
     p = struchead;
     while(p!=NULL)
     {
-	if(temp->content!=NULL&&p->name!=NULL)        
+	if(temp->content!=NULL&&p->name!=NULL)
 	if(!strcmp(p->name,temp->content))
 	{
 	    flag = 1;
@@ -433,14 +440,14 @@ char* struc_type(struct ast* temp)
         {
             return p->type;
         }
-        p = p->next;                                            
+        p = p->next;
     }
 }
 
 
 /*检查结构体里面是否重复定义*/
 int is_vardefine(struct var* head)
-{	
+{
 	int i,j;
 	int err=0,flag_err=0;
 	struct var* temp1 = head;
@@ -454,11 +461,10 @@ int is_vardefine(struct var* head)
 			if(temp1->name!=NULL&&temp2->name!=NULL)
 			{
 				if(!strcmp(temp1->name,temp2->name))
-				{	
+				{
 					if(temp1->scope == NULL&&temp2->scope == NULL)
 					{
-						//printf("Error type 20 at line %d：Redefined variable '%s'\n",yylineno,temp1->name);
-		    				err=1;
+		    			err=1;
 						flag_xsj=1;
 						p = temp1->name;
 						break;
@@ -467,13 +473,12 @@ int is_vardefine(struct var* head)
 					{
 						if(!strcmp(temp1->scope,temp2->scope))
 						{
-							//printf("Error type 20 at line %d：Redefined variable '%s'\n",yylineno,temp1->name);
-							err=2;		    					
+							err=2;
 							flag_xsj=1;
 							p = temp1->name;
 							break;
 						}
-					}	
+					}
 				}
 			}
 			temp2 = temp2->next;
@@ -482,11 +487,11 @@ int is_vardefine(struct var* head)
 		{
 			printf("Error type 3 at line %d：Redefined variable '%s'\n",yylineno,p);
 			flag_err = 1;
-			err = 0;		
+			err = 0;
 		}
 		else if(err == 2)
 		{
-			printf("Error type 15 at line %d：Redefined field '%s'\n",yylineno,p);	
+			printf("Error type 15 at line %d：Redefined field '%s'\n",yylineno,p);
 			flag_err = 2;
 			err = 0;
 		}
@@ -495,7 +500,7 @@ int is_vardefine(struct var* head)
 	return flag_err;
 }
 int is_arraydefine(struct array* head)
-{	
+{
 	int i,j;
 	int err=0,flag_err = 0;
 	struct array* temp1 = head;
@@ -509,11 +514,10 @@ int is_arraydefine(struct array* head)
 			if(temp1->name!=NULL&&temp2->name!=NULL)
 			{
 				if(!strcmp(temp1->name,temp2->name))
-				{	
+				{
 					if(temp1->scope == NULL&&temp2->scope == NULL)
 					{
-						//printf("Error type 20 at line %d：Redefined variable '%s'\n",yylineno,temp1->name);
-		    				err=1;
+		    			err=1;
 						flag_xsj=1;
 						p = temp1->name;
 					}
@@ -521,13 +525,11 @@ int is_arraydefine(struct array* head)
 					{
 						if(!strcmp(temp1->scope,temp2->scope))
 						{
-							
-							//printf("Error type 20 at line %d：Redefined variable '%s'\n",yylineno,temp1->name);
-							err=2;		    					
+							err=2;
 							flag_xsj=1;
 							p = temp1->name;
 						}
-					}	
+					}
 				}
 			}
 			temp2 = temp2->next;
@@ -536,11 +538,11 @@ int is_arraydefine(struct array* head)
 		{
 			printf("Error type 3 at line %d：Redefined array '%s'\n",yylineno,p);
 			flag_err = 1;
-			err = 0;		
+			err = 0;
 		}
 		else if(err == 2)
 		{
-			printf("Error type 15 at line %d：Redefined field '%s'\n",yylineno,p);	
+			printf("Error type 15 at line %d：Redefined field '%s'\n",yylineno,p);
 			flag_err = 2;
 			err = 0;
 		}
@@ -550,11 +552,11 @@ int is_arraydefine(struct array* head)
 }
 int main(int argc,char** argv)
 {
-	int flag_err=0;	
+	int flag_err=0;
 	varhead=(struct var*)malloc(sizeof(struct var));//变量符号表头指针
         vartail=varhead;//变量符号表尾指针
 	funchead=(struct func*)malloc(sizeof(struct func));//函数符号表头指针
-	functail=(struct func*)malloc(sizeof(struct func));//函数符号表尾指针       
+	functail=(struct func*)malloc(sizeof(struct func));//函数符号表尾指针
 	funchead->next = functail;//函数符号表尾指针
 	functail->paramnum=0;
 	struct func* temp;
@@ -583,7 +585,7 @@ int main(int argc,char** argv)
 	    		printf("%s  %s  %s\n",varhead->type,varhead->name,varhead->scope);
 		}
 		printf("\n");
-		printf("函数符号表\n");
+		printf("函数符号表\n-------------------------\n");
 		temp->paramnum = x5;
 		for(i = 0; i < x2; i++)
 		{
@@ -591,21 +593,21 @@ int main(int argc,char** argv)
 	    		printf("%s  %s  %s  %d\n",funchead->type,funchead->name,funchead->rtype,funchead->paramnum);
 		}
 		printf("\n");
-		printf("形参符号表\n");
+		printf("形参符号表\n-------------------------\n");
 		for(i = 0; i < x5; i++)
 		{
 	    		paramvarhead=paramvarhead->next;
 	    		printf("%s  %s  %s\n",paramvarhead->type,paramvarhead->name,paramvarhead->scope);
 		}
-		printf("\n");
-        	printf("数组符号表\n");
+		printf("\n-------------------------\n\n\n");
+        	printf("数组符号表\n-------------------------\n");
 		for(i = 0; i < x3; i++)
 		{
 		    arrayhead=arrayhead->next;
 		    printf("%s  %s  %d  %s\n",arrayhead->type,arrayhead->name,arrayhead->size,arrayhead->scope);
 		}
-		printf("\n");
-		printf("结构体符号表\n");
+		printf("\n-------------------------\n\n\n");
+		printf("结构体符号表\n-------------------------\n");
 		for(i = 0; i < x4; i++)
 		{
 		    struchead=struchead->next;
