@@ -38,7 +38,7 @@ int shmid,global_var;//共享内存
 int S;//信号灯
 int Sv;//全局变量的信号灯
 pid_t readbuf, writebuf;
-void par_task() {
+void par_task(int shmid,int global_var,int S,int Sv) {
     waitpid(readbuf, NULL, 0);
     waitpid(writebuf, NULL, 0);
     semctl(S, 0, IPC_RMID, arg);
@@ -140,7 +140,7 @@ int main() {
     if (readbuf) {//不在readbuf进程
         while ((writebuf = fork()) == -1);
         if(writebuf){//在父进程
-            par_task();
+            par_task(shmid,global_var,S,Sv);
         }
         if(!writebuf) {//在writebuf进程
             printf("\t\t\t\t\twrite_task is called!\n");
