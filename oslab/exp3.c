@@ -51,7 +51,10 @@ void read_task(){
     printf("\t\t\t\t\tread_task is processing!\n");
     shmaddr1 = shmat(shmid, NULL, 0);//连接共享内存
     cout1 = shmat(global_var,NULL,0);
-    *cout1 = 2;
+    P(Sv,0);
+    *cout1 = 0;
+    *(cout1+8)=64;
+    V(Sv,0);
     fp1 = fopen ("exp3.c","r");
     if (fp1!=NULL)
     {
@@ -62,7 +65,7 @@ void read_task(){
             V(S,1);
             if (j!=64) {
                 P(Sv,0);
-                *cout1-=2;
+                //*cout1-=0;
                 *(cout1+8)=j;
                 V(Sv,0);
                 printf("%d\n", j);
@@ -84,14 +87,17 @@ void read_task(){
 void write_task(){
     printf("\t\t\t\t\twrite_task is processing!\n");
     shmaddr2 = shmat(shmid, NULL, SHM_RDONLY);
-    cout2 = shmat(global_var,NULL,SHM_RDONLY);
+    cout2 = shmat(global_var,NULL,0);
+    P(Sv,0);
+    *(cout2+8)=64;
+    V(Sv,0);
     fp2 = fopen("test.c","w");
     if (fp2!=NULL) {
-        int i = 0,count2=0,j;
-        P(Sv,0);
-        j=*cout2;
-        V(Sv,0);
-        while (count2!=j) {
+        int i = 0,count2=0,j=64,count0;
+    //    P(Sv,0);
+    //    j=*cout2;
+    //    V(Sv,0);
+        while (j==64||count2<count0) {
             P(S,1);
             //printf("%s\n",shmaddr2+i);
             fwrite(shmaddr2+i,1,64,fp2);
@@ -102,8 +108,9 @@ void write_task(){
             count2++;
             printf("\t\t\tcount2:%d\n", count2);
             P(Sv,0);
-            j=*cout2;
-            printf("\t\tcout2:%d\n", *cout2);
+            j=*(cout2+8);
+            count0=*cout2;
+            printf("\t\tcout2:%d\n", j);
             V(Sv,0);
         }
         fwrite(shmaddr2+i,1,*(cout2+8),fp2);
