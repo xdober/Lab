@@ -23,7 +23,7 @@ int main(void) {
 	if(childpid1) {//不在子进程1
 		while((childpid2 = fork()) == -1);//创建子进程2
 		if(childpid2) {//在父进程
-			par_sig();			
+			par_sig();
 		}
 		if(!childpid2) {//在子进程2
 			chi2_sig();
@@ -43,10 +43,10 @@ void fa()  {
 	waitpid(childpid1,NULL,0);
 	waitpid(childpid2,NULL,0);
 	printf("\nParent Process is killed!\n");
-	exit(0);	
+	exit(0);
 }
 void chi1_sig() {
-	signal(SIGINT,SIG_IGN);
+	signal(SIGINT,SIG_IGN);//设置忽略信号
 	signal(16,stop1);
 	while(1) {
 		sprintf(string,"I send you %d times.\n",x++);
@@ -66,7 +66,7 @@ void chi2_sig() {
 		sleep(1);
 	}
 }
-void stop1() {
+void stop1() {//显示退出信息
 	printf("\nChild Process1 is killed by Parent!");
 	exit(0);
 }
