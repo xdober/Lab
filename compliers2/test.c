@@ -2,7 +2,7 @@ struct circle {
 	struct point {
 		int x;
 		float y;
-	};
+	} p;
 	int rad;
 };
 int addfun(int a,int b){
@@ -14,6 +14,8 @@ int main(){
 	float flo1;
 	int nums[10];
 	float flos[5];
+	struct circle ps;
+	ps.p.x = 3;
 	num1 = 3;
 	nums[1] = 4;
 	if(num1 == 1) {
