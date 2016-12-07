@@ -1,0 +1,9 @@
+struct Position {
+    float x;
+};
+struct Position {
+    float y;
+};
+int main(){
+    
+}

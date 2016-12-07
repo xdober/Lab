@@ -177,6 +177,7 @@ Def: Specifier DecList SEMI //检查变量是否重复定义
 	else if($2->tag==4) newarray(2,$1,$2);
     	else newvar(2,$1,$2);
     }
+	|Specifier SEMI {$$=newast("Def",2,$1,$2);}
 ;
 DecList: Dec {$$=newast("DecList",1,$1);}
     | Dec COMMA DecList {$$=newast("DecList",3,$1,$2,$3);$$->tag=$3->tag;}

@@ -578,40 +578,43 @@ int main(int argc,char** argv)
 	yyparse();
 	if(flag_xrr == 0)
 	{
-		printf("变量符号表\n");
+		printf("变量符号表\n-------------------------\n");
+        printf("类型\t变量名\t作用域\t\n");
 		for(i = 0; i < x1; i++)
 		{
 	    		varhead=varhead->next;
-	    		printf("%s  %s  %s\n",varhead->type,varhead->name,varhead->scope);
+	    		printf("%s\t%s\t%s\t\n",varhead->type,varhead->name,varhead->scope?varhead->scope:"global");
 		}
 		printf("\n");
 		printf("函数符号表\n-------------------------\n");
+        printf("类型\t函数名\t形参个数\n");
 		temp->paramnum = x5;
 		for(i = 0; i < x2; i++)
 		{
 	    		funchead=funchead->next;
-	    		printf("%s  %s  %s  %d\n",funchead->type,funchead->name,funchead->rtype,funchead->paramnum);
+	    		printf("%s\t%s\t%d\t\n",funchead->type,funchead->name,/*funchead->rtype,*/funchead->paramnum);
 		}
 		printf("\n");
 		printf("形参符号表\n-------------------------\n");
+        printf("类型\t形参名\t作用域\t\n");
 		for(i = 0; i < x5; i++)
 		{
 	    		paramvarhead=paramvarhead->next;
-	    		printf("%s  %s  %s\n",paramvarhead->type,paramvarhead->name,paramvarhead->scope);
+	    		printf("%s\t%s\t%s\t\n",paramvarhead->type,paramvarhead->name,paramvarhead->scope?paramvarhead->scope:"global");
 		}
-		printf("\n-------------------------\n\n\n");
-        	printf("数组符号表\n-------------------------\n");
+        printf("\n数组符号表\n---------------------------------\n");
+        printf("类型\t变量名\t元素个数 作用域\t\n");
 		for(i = 0; i < x3; i++)
 		{
 		    arrayhead=arrayhead->next;
-		    printf("%s  %s  %d  %s\n",arrayhead->type,arrayhead->name,arrayhead->size,arrayhead->scope);
+		    printf("%s\t%s\t%d\t %s\t\n",arrayhead->type,arrayhead->name,arrayhead->size,arrayhead->scope?arrayhead->scope:"global");
 		}
-		printf("\n-------------------------\n\n\n");
-		printf("结构体符号表\n-------------------------\n");
+		printf("\n结构体符号表\n-------------------------\n");
+        printf("类型\t结构名\t\n");
 		for(i = 0; i < x4; i++)
 		{
 		    struchead=struchead->next;
-		    printf("%s  %s\n",struchead->type,struchead->name);
+		    printf("%s\t%s\t\n",struchead->type,struchead->name);
 		}
 		}
 	return 0;
