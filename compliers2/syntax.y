@@ -5,11 +5,11 @@
 	extern int yyerror(const char* msg);
 	extern int yylex(void);
 	extern int paramnum;
-	extern int flag_xsj;
-	extern int  size_xsj;
+	extern int flag_xrr;
+	extern int  size_xrr;
 	extern int x5;
-	char* scope1_xsj;
-	char* scope2_xsj;
+	char* scope1_xrr;
+	char* scope2_xrr;
 %}
 %union{
 struct ast* a;
@@ -42,7 +42,7 @@ VarDec  FunDec  VarList  ParamDec  CompSt  StmtList  Stmt  DefList  Def  DecList
 Program: ExtDefList
 	{
 	    $$=newast("Program",1,$1);
-	    if(flag_xsj == 0)
+	    if(flag_xrr == 0)
  	    {
 		wait_it = is_vardefine(varhead)||is_arraydefine(arrayhead);
 		if(wait_it == 0)
@@ -84,7 +84,7 @@ StructSpecifier: STRUCT OptTag LC DefList RC //检查结构体是否重复定义
 	if(is_struc_define($2))
 	{
 	    printf("Error type 16 at line %d：Duplicated name '%s'\n",yylineno,$2->content);
-	    flag_xsj=1;
+	    flag_xrr=1;
 	}
 	else
 	{
@@ -101,7 +101,7 @@ StructSpecifier: STRUCT OptTag LC DefList RC //检查结构体是否重复定义
 	if(!is_struc_define($2))
 	{
 	    printf("Error type 17 at line %d：Undefined structure '%s'\n",yylineno,$2->content);
-	    flag_xsj=1;
+	    flag_xrr=1;
 	}
 	else $$->scope = $2->content;
     }
@@ -112,7 +112,7 @@ OptTag: ID {$$=newast("OptTag",1,$1);}
 Tag: ID {$$=newast("Tag",1,$1);}
 ;
 VarDec: ID {$$=newast("VarDec",1,$1);$$->tag=1;}
-    | VarDec LB INT RB {$$=newast("VarDec",4,$1,$2,$3,$4);$$->content = $1->content;$$->tag=4;size_xsj=(int)$3->value;}
+    | VarDec LB INT RB {$$=newast("VarDec",4,$1,$2,$3,$4);$$->content = $1->content;$$->tag=4;size_xrr=(int)$3->value;}
 ;
 FunDec: ID LP VarList RP //检查函数是否重复定义
     {
@@ -121,7 +121,7 @@ FunDec: ID LP VarList RP //检查函数是否重复定义
 	if(is_func_define($1))
 	{
 	    printf("Error type 4 at line %d：Redefined function '%s'\n",yylineno,$1->content);
-	    flag_xsj=1;
+	    flag_xrr=1;
 	}
 	else
 	{
@@ -135,7 +135,7 @@ FunDec: ID LP VarList RP //检查函数是否重复定义
 	if(is_func_define($1))
 	{
 	    printf("Error type 4 at line %d：Redefined function '%s'\n",yylineno,$1->content);
-	    flag_xsj=1;
+	    flag_xrr=1;
 	}
 	else
 	    newfunc(2,$1);
@@ -190,14 +190,14 @@ Exp: Exp ASSIGNOP Exp //检查赋值号两边的表达式类型是否一致
 	if($1->tag == 3)
 	{
 		printf("Error type 6 at line %d：The left-hand side of an assignment must be a variable\n",yylineno);
-		flag_xsj = 1;
+		flag_xrr = 1;
 	}
 	else if($1->type!= NULL&&$3->type!=NULL)
 	{
 	 	if(strcmp($1->type,$3->type))
 		{
 		    printf("Error type 5 at line %d：Type mismatched for assignment\n",yylineno);
-		    flag_xsj=1;
+		    flag_xrr=1;
 		}
 	}
     }
@@ -213,7 +213,7 @@ Exp: Exp ASSIGNOP Exp //检查赋值号两边的表达式类型是否一致
 	else if(strcmp($1->type,$3->type))
 	{
 	    printf("Error type 7 at line %d：Type mismatched for operands\n",yylineno);
-	    flag_xsj=1;
+	    flag_xrr=1;
 	}
 	else $$->type = $1->type;
     }
@@ -226,7 +226,7 @@ Exp: Exp ASSIGNOP Exp //检查赋值号两边的表达式类型是否一致
 	else if(strcmp($1->type,$3->type))
 	{
 	    printf("Error type 7 at line %d：Type mismatched for operands\n",yylineno);
-	    flag_xsj=1;
+	    flag_xrr=1;
 	}
 	else $$->type = $1->type;
     }
@@ -239,7 +239,7 @@ Exp: Exp ASSIGNOP Exp //检查赋值号两边的表达式类型是否一致
 	else if(strcmp($1->type,$3->type))
 	{
 	    printf("Error type 7 at line %d：Type mismatched for operands\n",yylineno);
-	    flag_xsj=1;
+	    flag_xrr=1;
 	}
 	else $$->type = $1->type;
     }
@@ -252,7 +252,7 @@ Exp: Exp ASSIGNOP Exp //检查赋值号两边的表达式类型是否一致
 	else if(strcmp($1->type,$3->type))
 	{
 	    printf("Error type 7 at line %d：Type mismatched for operands\n",yylineno);
-	    flag_xsj=1;
+	    flag_xrr=1;
 	}
 	else $$->type = $1->type;
     }
@@ -265,17 +265,17 @@ Exp: Exp ASSIGNOP Exp //检查赋值号两边的表达式类型是否一致
 	if(is_var_define($1)||is_paramvar_define($1))
 	{
 	    printf("Error type 11 at line %d：'%s'is not a function\n",yylineno,$1->content);
-	    flag_xsj=1;
+	    flag_xrr=1;
 	}
 	else if(!is_func_define($1))
 	{
 	    printf("Error type 2 at line %d：Undefined function '%s'\n",yylineno,$1->content);
-	    flag_xsj=1;
+	    flag_xrr=1;
 	}
 	else if(x5 != paramnum)
 	{
 		printf("Error type 9 at Line %d：Function '%s' is not applicable for arguments\n",yylineno,$1->content);
-		flag_xsj = 1;
+		flag_xrr = 1;
 	}
     }
     | ID LP RP
@@ -284,17 +284,17 @@ Exp: Exp ASSIGNOP Exp //检查赋值号两边的表达式类型是否一致
 	if(is_var_define($1)||is_paramvar_define($1))
 	{
 	    printf("Error type 11 at line %d：'%s'is not a function\n",yylineno,$1->content);
-	    flag_xsj=1;
+	    flag_xrr=1;
 	}
 	else if(!is_func_define($1))
 	{
 	    printf("Error type 2 at line %d：Undefined function '%s'\n",yylineno,$1->content);
-	    flag_xsj=1;
+	    flag_xrr=1;
 	}
 	else if(x5 != paramnum)
 	{
 		printf("Error type 9 at Line %d：Function '%s' is not applicable for arguments\n",yylineno,$1->content);
-		flag_xsj = 1;
+		flag_xrr = 1;
 	}
     }
     | Exp LB Exp RB //检查数组是否正常使用
@@ -303,59 +303,59 @@ Exp: Exp ASSIGNOP Exp //检查赋值号两边的表达式类型是否一致
 	if((!is_array_define($1)))
 	{
             printf("Error type 10 at line %d：'%s' is not an array\n",yylineno,$1->content);
- 	    flag_xsj=1;
+ 	    flag_xrr=1;
 	}
 	else if($3->type == NULL)
 	{
 	    printf("Error type 12 at line %d：'%f' is not an integer\n",yylineno,$3->value);
-	    flag_xsj=1;
+	    flag_xrr=1;
 	}
 	else if(strcmp("int",$3->type))
 	{
 	    printf("Error type 12 at line %d：'%f' is not an integer\n",yylineno,$3->value);
-	    flag_xsj=1;
+	    flag_xrr=1;
 	}
 	else if(is_var_define($1)&&is_paramvar_define($1))
 	{
 	    printf("Error type 11 at line %d：'%s'is not a function\n",yylineno,$1->content);
-	    flag_xsj=1;
+	    flag_xrr=1;
 	}
 	else if(!is_array_define($1))
 	{
 	    printf("Error type 2 at line %d：Undefined function '%s'\n",yylineno,$1->content);
-	    flag_xsj=1;
+	    flag_xrr=1;
 	}
     }
     | Exp DOT Exp //检查结构体是否正常使用
     {
 	$$=newast("Exp",3,$1,$2,$3);
-	scope1_xsj = var_type($1);
-	scope2_xsj = var_scope($3);
+	scope1_xrr = var_type($1);
+	scope2_xrr = var_scope($3);
 	if(is_var_define($1)||is_paramvar_define($1))
 	{
-		if(!(strcmp(scope1_xsj,"int")&&strcmp(scope1_xsj,"float")))
+		if(!(strcmp(scope1_xrr,"int")&&strcmp(scope1_xrr,"float")))
 		{
 		    	printf("Error type 13 at line %d：Illegal use of '.'\n",yylineno);
-		    	flag_xsj=1;
+		    	flag_xrr=1;
 		}
-		else if(scope2_xsj == NULL)
+		else if(scope2_xrr == NULL)
 		{
 			printf("Error type 14 at line %d：Non-existent field '%s'\n",yylineno,$3->content);
-		    	flag_xsj=1;
+		    	flag_xrr=1;
 		}
 		else
 		{
-			if(strcmp(scope1_xsj,scope2_xsj))
+			if(strcmp(scope1_xrr,scope2_xrr))
 			{
 				printf("Error type 14 at line %d：Non-existent field '%s'\n",yylineno,$3->content);
-		    		flag_xsj=1;
+		    		flag_xrr=1;
 			}
 		}
 	}
 	else
 	{
 		printf("Error type 13 at line %d：Illegal use of '.'\n",yylineno);
-		flag_xsj=1;
+		flag_xrr=1;
 	}
     }
     | ID //检查变量在使用时是否定义
@@ -364,10 +364,10 @@ Exp: Exp ASSIGNOP Exp //检查赋值号两边的表达式类型是否一致
 
 	if((!is_var_define($1))&&(!is_array_define($1))&&(!is_paramvar_define($1)))
 	{
-		if(flag_xsj == 0)
+		if(flag_xrr == 0)
 		{
 			printf("Error type 1 at line %d：'%s' Undefined variable\n",yylineno,$1->content);
-			flag_xsj=1;
+			flag_xrr=1;
 		}
 	}
 	else {$$->type = var_type($1);}
@@ -396,7 +396,7 @@ Args: Exp COMMA Args {$$=newast("Args",3,$1,$2,$3);paramnum=paramnum+1;}  //记�
 %%
 int yyerror(const char *msg)
 {
-	flag_xsj=1;
+	flag_xrr=1;
 	fprintf(stderr,"error: %s %d %d\n",msg,yylloc.first_line,yylloc.first_column);
 	return 0;
 }

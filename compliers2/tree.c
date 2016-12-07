@@ -2,8 +2,8 @@
 extern void yyrestart(FILE * f);
 extern int yyparse(void);
 extern int yyerror(const char*);
-int i,flag_xsj=0;
-int size_xsj = 0;//数组大小
+int i,flag_xrr=0;
+int size_xrr = 0;//数组大小
 int x1=0;//变量个数
 int x2=0;//函数个数
 int x3=0;//数组个数
@@ -220,7 +220,7 @@ void newfunc(int num,...)
 		if(strcmp(functail->rtype,temp->content))
 		{
 		    printf("Error type 8 at line %d: Type mismatched for return.\n",yylineno);
-	  	    flag_xsj=1;
+	  	    flag_xrr=1;
 		}
             }
 	    functail->type = temp->content;
@@ -343,7 +343,7 @@ void newarray(int num,...)
     a->type = temp->content;
     temp=va_arg(valist, struct ast*);//取变长参数列表中的第二个结点
     a->name = temp->content;
-    a->size = size_xsj;
+    a->size = size_xrr;
     arraytail->next = a;
     arraytail = a;
     x3++;
@@ -465,7 +465,7 @@ int is_vardefine(struct var* head)
 					if(temp1->scope == NULL&&temp2->scope == NULL)
 					{
 		    			err=1;
-						flag_xsj=1;
+						flag_xrr=1;
 						p = temp1->name;
 						break;
 					}
@@ -474,7 +474,7 @@ int is_vardefine(struct var* head)
 						if(!strcmp(temp1->scope,temp2->scope))
 						{
 							err=2;
-							flag_xsj=1;
+							flag_xrr=1;
 							p = temp1->name;
 							break;
 						}
@@ -518,7 +518,7 @@ int is_arraydefine(struct array* head)
 					if(temp1->scope == NULL&&temp2->scope == NULL)
 					{
 		    			err=1;
-						flag_xsj=1;
+						flag_xrr=1;
 						p = temp1->name;
 					}
 					else if(temp1->scope != NULL&&temp2->scope != NULL)
@@ -526,7 +526,7 @@ int is_arraydefine(struct array* head)
 						if(!strcmp(temp1->scope,temp2->scope))
 						{
 							err=2;
-							flag_xsj=1;
+							flag_xrr=1;
 							p = temp1->name;
 						}
 					}
@@ -576,7 +576,7 @@ int main(int argc,char** argv)
 	}
 	yyrestart(f);
 	yyparse();
-	if(flag_xsj == 0)
+	if(flag_xrr == 0)
 	{
 		printf("变量符号表\n");
 		for(i = 0; i < x1; i++)
