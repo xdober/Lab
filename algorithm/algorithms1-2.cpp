@@ -48,12 +48,12 @@ int  select2(int *A, int m, int p, int k) {
 	while(1){
 		n = p-m+1;
 		int tmp=floor(n/r);
-		for(i=1;i<=tmp;i++) {
+		for(i=1;i<tmp;i++) {
 			insertionsort(A,m+(i-1)*r,m+i*r-1);
 			interchange(&A[m+i-1],&A[(int)(m+(i-1)*r+floor(r/2)-1)]);
 		}
 		j = select2(A,m,m+floor(n/r)-1,ceil(floor(n/r)/2));
-		interchange(&A[m],&A[j]);
+		interchange(&A[m],&A[p]);
 		j = p+1;
 		partition(m,&j);
 		if(j-m+1 == k){
@@ -71,10 +71,15 @@ int  select2(int *A, int m, int p, int k) {
 
 int main(){
 	int val;
-	insertionsort(ary,0,19);
+/*	insertionsort(ary,0,19);
 	for (int i = 0; i < 20; ++i)
 	{
 		printf("%d ",ary[i] );
-	}
-	return 0;	
+	}*/
+	val = select2(ary,0,19,7); printf("%d\n", ary[val]);
+		for (int i = 0; i < 20; ++i)
+		{
+			printf("%d ",ary[i] );
+		}
+	return 0;
 }
