@@ -4,11 +4,16 @@
 void interchange(int *a, int *b);
 void partition(int ,int *);
 void quicksort2(int , int );
-void quicksort(int *val, int num);
 double maxd = 2 * log(NUM)/log(2.0);
 int max = (int)maxd;
-int ary[NUM] = {150,30,60,70,40,90,80,20,10,00,50,110,130,120,140,160,170,190,180,200};
+int ary[NUM] = {150,30,60,70,40,90,80,20,10,00,50,110,130,120,140,160,170,190,180,100};
 int main(){
+	printf("source values :\n");
+	for (int i = 0; i < NUM; ++i)
+	{
+		printf("%d ", ary[i]);
+	}
+	printf("\nsorted values :\n");
 	int a = 0,b = 19;
 	quicksort2(a,b);
 	for (int i = 0; i < NUM; ++i)

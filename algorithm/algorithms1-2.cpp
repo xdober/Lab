@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <math.h>
-#define r 3
+#define r 5
 double maxd = 2 * log(20.0)/log(2.0);
 int max = (int)maxd;
-int ary[20] = {150,30,60,70,40,90,80,20,10,00,50,110,130,120,140,160,170,190,180,100};
+int ary[21] = {150,30,60,70,40,90,80,20,10,00,50,110,130,120,140,160,170,190,180,100,1000};
 
 void interchange(int *a, int *b) {
 	int tmp = *a;
@@ -26,60 +26,71 @@ void partition(int m, int *p) {
 	ary[*p] = v;
 }
 
-void insertionsort(int *A, int m, int p) {
-	int tmp = p-m+1, j, item, i=0;
-	for(j = 1;j < tmp;j++) {
-		item = A[m+j];
-		i = j-1;
-		while(item<A[m+i]){
-			A[m+i+1] = A[m+i];
+void insertionsort(int *A,int m,int p)
+{
+	int j,item,i;
+	for(j = m + 1;j <= p;j++)
+	{
+		item = A[j];
+		i = j - 1;
+		while((item < A[i]) && (i>= m))
+		{
+			A[i + 1] = A[i];
 			i = i - 1;
 		}
-		A[i+1] = item;
+		A[i + 1] = item;
 	}
 }
 
-int  select2(int *A, int m, int p, int k) {
-	int n, i, j;
-	if(p-m+1 <= r) {
+int select2(int *A,int m,int p,int k)
+{
+	int n,i,j;
+	double nm;
+	int num1,num2,num3;//num1: n/r向下取整的值,num2: r/2向下取整的值 ,num3: num2/2向上取整的值 
+	if(p - m + 1 <= r)
+	{
 		insertionsort(A,m,p);
-		return m+k-1;
+		return (m + k - 1);
 	}
-	while(1){
-		n = p-m+1;
-		int tmp=floor(n/r);
-		for(i=1;i<tmp;i++) {
-			insertionsort(A,m+(i-1)*r,m+i*r-1);
-			interchange(&A[m+i-1],&A[(int)(m+(i-1)*r+floor(r/2)-1)]);
+	while(1)
+	{ 
+		n = p - m + 1;
+		nm = n*1.0/r;
+		num1 = floor(nm);
+		nm = r/2.0;
+		num2 = floor(nm);
+		nm = num2/2.0;
+		num3 = ceil(nm); 
+		for(i = 1;i < num1;i++)
+		{
+			insertionsort(A,m + (i - 1) * r,m + i * r -1);
+			interchange(&A[m + i - 1],&A[m + (i - 1) * r + num2 - 1]);
 		}
-		j = select2(A,m,m+floor(n/r)-1,ceil(floor(n/r)/2));
-		interchange(&A[m],&A[p]);
-		j = p+1;
+		j = select2(A,m,m + num2 - 1 ,num3);
+		interchange(&A[m],&A[j]);
+		j = p + 1;
 		partition(m,&j);
-		if(j-m+1 == k){
-			return j;
-		}
-		else if(j-m+1>k){
-			p = j-1;
-		}
-		else{
-			k = k-(j-m+1);
-			m = j+1;
+		if((j - m + 1)== k) return j;
+		else if((j - m + 1) > k) p = j - 1;
+		else 
+		{
+			k = k - (j - m + 1);
+			m = j + 1;
 		}
 	}
 }
-
 int main(){
-	int val;
-/*	insertionsort(ary,0,19);
+	int num;
+	printf("source values :\n");
 	for (int i = 0; i < 20; ++i)
 	{
-		printf("%d ",ary[i] );
-	}*/
-	val = select2(ary,0,19,7); printf("%d\n", ary[val]);
-		for (int i = 0; i < 20; ++i)
-		{
-			printf("%d ",ary[i] );
-		}
+		printf("%d ", ary[i]);
+	}
+	printf("\n");
+	for (int i = 1; i < 21; ++i)
+	{
+		num = select2(ary,0,20,i); 
+		printf("The %2dth small value:  %d\n", i,ary[num]);
+	}
 	return 0;
 }
