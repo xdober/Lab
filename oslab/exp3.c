@@ -2,8 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
-#include <time.h>
-#include <string.h>
 #include <wait.h>
 #include <sys/shm.h>
 #include <sys/sem.h>
@@ -48,35 +46,35 @@ void par_task(int shmid,int global_var,int S,int Sv) {
     shmctl(global_var,IPC_RMID,NULL);
 }
 void read_task(){
-    printf("\t\t\t\t\tread_task is processing!\n");
+//    printf("\t\t\t\t\tread_task is processing!\n");
     shmaddr1 = shmat(shmid, NULL, 0);//连接共享内存
     cout1 = shmat(global_var,NULL,0);
     P(Sv,0);
     *cout1 = 0;
-    *(cout1+8)=64;
+    *(cout1+8)=64;//最后一次从文件读到的内存大小，初始值设为64
     V(Sv,0);
-    fp1 = fopen ("exp3.c","r");
+    fp1 = fopen ("20161201190944.png","r");
     if (fp1!=NULL)
     {
         int i = 0,j=64;
         while (j==64) {
-            P(S,0);
+            P(S,0);//空个数
             j = fread(shmaddr1+i,1,64,fp1);
-            V(S,1);
+            V(S,1);//满个数
             if (j!=64) {
                 P(Sv,0);
                 //*cout1-=0;
-                *(cout1+8)=j;
+                *(cout1+8)=j;//最后一次从文件读到的内存大小
                 V(Sv,0);
-                printf("%d\n", j);
+//                printf("%d\n", j);
                 break;
             }
-            printf("\t\t\t\tread:%d\n", i/64);
+//            printf("\t\t\t\tread:%d\n", i/64);
             i+=64;
             i=i%1024;
             P(Sv,0);
             (*cout1)++;
-            printf("\tcout1:%d\n", *cout1);
+//            printf("\tcout1:%d\n", *cout1);
             V(Sv,0);
         }
         fclose (fp1);
@@ -85,36 +83,36 @@ void read_task(){
     shmdt(cout1);
 }
 void write_task(){
-    printf("\t\t\t\t\twrite_task is processing!\n");
-    shmaddr2 = shmat(shmid, NULL, SHM_RDONLY);
-    cout2 = shmat(global_var,NULL,0);
+//    printf("\t\t\t\t\twrite_task is processing!\n");
+    shmaddr2 = shmat(shmid, NULL, SHM_RDONLY);//连接共享内存
+    cout2 = shmat(global_var,NULL,0);//全局变量地址
     P(Sv,0);
     *(cout2+8)=64;
     V(Sv,0);
-    fp2 = fopen("test.c","w");
+    fp2 = fopen("new.png","w");
     if (fp2!=NULL) {
         int i = 0,count2=0,j=64,count0;
     //    P(Sv,0);
     //    j=*cout2;
     //    V(Sv,0);
-        while (j==64||count2<count0) {
+        while (j==64||count2<count0) {//只有上一次写到缓冲区的内存个数不足64并且写到文件的次数不小于从文件读取的次数时才是最后一次写操作
             P(S,1);
             //printf("%s\n",shmaddr2+i);
             fwrite(shmaddr2+i,1,64,fp2);
             V(S,0);
-            printf("write:%d\n", i/64);
+//            printf("write:%d\n", i/64);
             i=i+64;
             i=i%1024;
             count2++;
-            printf("\t\t\tcount2:%d\n", count2);
+//            printf("\t\t\tcount2:%d\n", count2);
             P(Sv,0);
-            j=*(cout2+8);
-            count0=*cout2;
-            printf("\t\tcout2:%d\n", j);
+            j=*(cout2+8);//上一次从文件读到的内存个数
+            count0=*cout2;//已经从文件读到缓冲区的次数
+//            printf("\t\tcout2:%d\n", j);
             V(Sv,0);
         }
-        fwrite(shmaddr2+i,1,*(cout2+8),fp2);
-        printf("%d\n", *(cout2+8));
+        fwrite(shmaddr2+i,1,*(cout2+8),fp2);//最后一次写操作，读到缓冲区几个内存大小就写到文件几个内存大小
+//        printf("%d\n", *(cout2+8));
         fclose(fp2);
     }
     shmdt(shmaddr2);
@@ -132,7 +130,7 @@ int main() {
         perror("semget()");
         return -1;
     }
-    arg.val = 15;//设置信号灯
+    arg.val = 16;//设置信号灯
     semctl(S, 0, SETVAL, arg);
     arg.val = 0;
     semctl(S, 1, SETVAL, arg);
@@ -150,12 +148,12 @@ int main() {
             par_task(shmid,global_var,S,Sv);
         }
         if(!writebuf) {//在writebuf进程
-            printf("\t\t\t\t\twrite_task is called!\n");
+//            printf("\t\t\t\t\twrite_task is called!\n");
             write_task();
         }
     }
     if(!readbuf) {
-        printf("\t\t\t\t\tread_task is processing!\n");
+//        printf("\t\t\t\t\tread_task is processing!\n");
         read_task();
     }
 }

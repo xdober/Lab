@@ -48,7 +48,7 @@ void par_task(int shmid,int global_var,int S,int Sv) {
     shmctl(global_var,IPC_RMID,NULL);
 }
 void read_task(){
-    printf("\t\t\t\t\tread_task is processing!\n");
+//    printf("\t\t\t\t\tread_task is processing!\n");
     shmaddr1 = shmat(shmid, NULL, 0);//连接共享内存
     cout1 = shmat(global_var,NULL,0);
     P(Sv,0);
@@ -68,15 +68,15 @@ void read_task(){
                 //*cout1-=0;
                 *(cout1+8)=j;
                 V(Sv,0);
-                printf("%d\n", j);
+//                printf("%d\n", j);
                 break;
             }
-            printf("\t\t\t\tread:%d\n", i/64);
+//            printf("\t\t\t\tread:%d\n", i/64);
             i+=64;
             i=i%1024;
             P(Sv,0);
             (*cout1)++;
-            printf("\tcout1:%d\n", *cout1);
+//            printf("\tcout1:%d\n", *cout1);
             V(Sv,0);
         }
         fclose (fp1);
@@ -85,7 +85,7 @@ void read_task(){
     shmdt(cout1);
 }
 void write_task(){
-    printf("\t\t\t\t\twrite_task is processing!\n");
+//    printf("\t\t\t\t\twrite_task is processing!\n");
     shmaddr2 = shmat(shmid, NULL, SHM_RDONLY);
     cout2 = shmat(global_var,NULL,0);
     P(Sv,0);
@@ -102,19 +102,19 @@ void write_task(){
             //printf("%s\n",shmaddr2+i);
             fwrite(shmaddr2+i,1,64,fp2);
             V(S,0);
-            printf("write:%d\n", i/64);
+//            printf("write:%d\n", i/64);
             i=i+64;
             i=i%1024;
             count2++;
-            printf("\t\t\tcount2:%d\n", count2);
+//            printf("\t\t\tcount2:%d\n", count2);
             P(Sv,0);
             j=*(cout2+8);
             count0=*cout2;
-            printf("\t\tcout2:%d\n", j);
+//            printf("\t\tcout2:%d\n", j);
             V(Sv,0);
         }
         fwrite(shmaddr2+i,1,*(cout2+8),fp2);
-        printf("%d\n", *(cout2+8));
+//        printf("%d\n", *(cout2+8));
         fclose(fp2);
     }
     shmdt(shmaddr2);
@@ -150,12 +150,12 @@ int main() {
             par_task(shmid,global_var,S,Sv);
         }
         if(!writebuf) {//在writebuf进程
-            printf("\t\t\t\t\twrite_task is called!\n");
+//            printf("\t\t\t\t\twrite_task is called!\n");
             write_task();
         }
     }
     if(!readbuf) {
-        printf("\t\t\t\t\tread_task is processing!\n");
+//        printf("\t\t\t\t\tread_task is processing!\n");
         read_task();
     }
 }
