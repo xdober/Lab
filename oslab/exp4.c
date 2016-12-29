@@ -58,8 +58,8 @@ void printdir(char *dir, int depth) {
                 }
                 pw = getpwuid(statbuf.st_uid);
                 gp = getgrgid(statbuf.st_gid);
-                printf(" %s %s %8ld ", pw->pw_name, gp->gr_name, statbuf.st_size);
-                tm = localtime(&statbuf.st_ctime);
+                printf(" %s %s %6ld ", pw->pw_name, gp->gr_name, statbuf.st_size);
+                tm = localtime(&statbuf.st_mtime);
                 printf("%4d %2d月%2d %2d:%02d", tm->tm_year+1900, tm->tm_mon+1, tm->tm_mday, tm->tm_hour, tm->tm_min);
         printf("  %s\n", entry->d_name); //打印目录项的深度、目录名等信息
             printdir(entry->d_name,depth+4); //递归调用printdir,打印子目录的信息,其中的depth+4;
@@ -95,8 +95,8 @@ void printdir(char *dir, int depth) {
          }
          pw = getpwuid(statbuf.st_uid);
          gp = getgrgid(statbuf.st_gid);
-         printf(" %s %s %8ld ", pw->pw_name, gp->gr_name, statbuf.st_size);
-         tm = localtime(&statbuf.st_ctime);
+         printf(" %s %s %6ld ", pw->pw_name, gp->gr_name, statbuf.st_size);
+         tm = localtime(&statbuf.st_mtime);
          printf("%4d %2d月%2d %2d:%02d", tm->tm_year+1900, tm->tm_mon+1, tm->tm_mday, tm->tm_hour, tm->tm_min);
          printf("  %s\n", entry->d_name);
      }
