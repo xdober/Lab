@@ -6,5 +6,4 @@ all:
 .PHONY=run
 
 run:
-	./parser 1.c output.c
-
+	./parser 2.c output.c
